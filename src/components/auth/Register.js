@@ -79,7 +79,7 @@ class Register extends React.Component {
   };
 
   displayErrors = (errors) =>
-    errors.map((error, i) => <p key={i}>{error.message.split("Firebase:")[1]}</p>);
+    errors.map((error, i) => <p key={i}>{error.message.includes("Firebase:")[1]? error.message.split("Firebase:")[1] : error.message}</p>);
 
   handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });

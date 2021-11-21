@@ -25,7 +25,7 @@ class Login extends React.Component {
   displayErrors = (errors) =>
     errors.map((error, i) => {
       if(i === 0){
-        return <p key={i}>{error.message.split("Firebase:")[1]}</p>
+        return <p key={i}>{error.message.includes("Firebase:")[1]? error.message.split("Firebase:")[1] : error.message}</p>
       }
     });
 
