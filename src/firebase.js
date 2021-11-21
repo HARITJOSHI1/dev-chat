@@ -1,8 +1,9 @@
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import "firebase/auth";
-import "firebase/database";
+import {initializeApp} from 'firebase/app';
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {getDatabase, ref, set } from "firebase/database";
 import "firebase/storage"
+import { getAnalytics } from "firebase/analytics";
+// import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAd_Zr47J8f-UVUyCM0u01zDFJuLnzWJn8",
@@ -16,4 +17,19 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+getAnalytics(app);
+
+const database = {
+  getDatabase,
+  ref,
+  set
+}
+
+const firebase = {
+  auth: getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  database
+}
+
+export default firebase;
