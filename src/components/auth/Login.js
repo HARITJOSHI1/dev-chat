@@ -72,7 +72,7 @@ class Login extends React.Component {
   };
 
   render() {
-    const { username, email, password, passwordConfirmation, errors, loading } =
+    const {email, password, errors, loading } =
       this.state;
 
     return (
