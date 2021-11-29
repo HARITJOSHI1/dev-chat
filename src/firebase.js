@@ -1,5 +1,5 @@
 import {initializeApp} from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword,onAuthStateChanged } from "firebase/auth";
 import {getDatabase, ref, set } from "firebase/database";
 import "firebase/storage"
 import { getAnalytics } from "firebase/analytics";
@@ -27,6 +27,7 @@ const database = {
 
 const firebase = {
   auth: getAuth,
+  onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
