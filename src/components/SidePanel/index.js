@@ -15,7 +15,7 @@ class SidePanel extends React.Component {
       >
 
         <UserPanel currentUser= {this.props.currentUser}/>
-        <Channel />
+        <Channel currentUser= {this.props.currentUser}/>
 
       </Menu>
     );

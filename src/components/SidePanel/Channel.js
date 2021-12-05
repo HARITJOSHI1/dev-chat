@@ -1,14 +1,48 @@
 import React, { Component } from 'react';
 import { Menu, Icon, Modal, Form, Input, Button } from "semantic-ui-react";
+import firebase from "../../firebase";
 
 class Channel extends Component {
 
     state = {
+        user: this.props.currentUser.createdUser,
         channels: [],
         channelName: "",
         channelDetails: "",
         modal: false
     }
+
+    addChannel({ channelName, channelDetails, user }) {
+        const { push, ref, child, set, update, getDatabase } = firebase.database;
+        const db = getDatabase();
+        const key = push(child(ref(db), 'channels')).key;
+        const newChannel = {
+            id: key,
+            name: channelName,
+            details: channelDetails,
+            createdBy: {
+                name: user.displayName,
+                avatar: user.photoURL
+            }
+        }
+
+        const data = {};
+        data['channels/' + key] = newChannel;
+        update(ref(db), data).then(() => {
+            this.setState({ channelName: "", channelDetails: "" });
+            this.setState({ modal: false });
+        });
+    }
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        if (this.isFormValid(this.state)) {
+            this.addChannel(this.state);
+        }
+        else return;
+    }
+
+    isFormValid = ({ channelName, channelDetails }) => channelName && channelDetails;
 
     handleChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
@@ -21,19 +55,19 @@ class Channel extends Component {
                 <Menu.Menu>
                     <Menu.Item>
                         <span>
-                            <Icon name="exchange" style= {{cursor: "pointer"}} /> CHANNELS
+                            <Icon name="exchange" style={{ cursor: "pointer" }} /> CHANNELS
                         </span>
 
                         {" "}
 
-                        ({channels.length}) <Icon name="add" style= {{cursor: "pointer"}} onClick={() => this.setState({ modal: true })} />
+                        ({channels.length}) <Icon name="add" style={{ cursor: "pointer" }} onClick={() => this.setState({ modal: true })} />
                     </Menu.Item>
                 </Menu.Menu>
 
                 <Modal basic open={modal} onClose={() => this.setState({ modal: false })}>
                     <Modal.Header>Add a Channel</Modal.Header>
                     <Modal.Content>
-                        <Form>
+                        <Form onSubmit={this.handleSubmit}>
                             <Form.Field>
                                 <Input
                                     fluid
@@ -56,7 +90,7 @@ class Channel extends Component {
                     </Modal.Content>
 
                     <Modal.Actions>
-                        <Button color="green" inverted>
+                        <Button color="green" inverted onClick={this.handleSubmit}>
                             <Icon name="checkmark" /> Add
                         </Button>
 
