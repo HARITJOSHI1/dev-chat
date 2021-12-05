@@ -44,8 +44,8 @@ class UserPanel extends Component {
                             <Header.Content>DevChat</Header.Content>
                         </Header>
                         <Header>
-                            <Image src={user.photoURL} spaced="right" size = "small" avatar />
-                            <Dropdown trigger={<span>{user.displayName}</span>} options={this.dropdownOptions()} />
+                            <Image src={user.photoURL} spaced="right" size="small" avatar />
+                            <Dropdown style={{ color: "#ffffff" }} trigger={<span>{user.displayName}</span>} options={this.dropdownOptions()} />
                         </Header>
                     </Grid.Row>
                 </Grid.Column>
