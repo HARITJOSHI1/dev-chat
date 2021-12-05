@@ -14,11 +14,14 @@ const user_reducer = (state = initialUser, action) => {
         isLoading: false
       };
 
+    case actionTypes.CLEAR_USER:
+      return { ...initialUser, isLoading: false };
+
     default:
       return state;
   }
 };
 
 export default combineReducers({
-    user: user_reducer
+  user: user_reducer
 })

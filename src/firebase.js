@@ -1,6 +1,13 @@
-import {initializeApp} from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword,onAuthStateChanged } from "firebase/auth";
-import {getDatabase, ref, set } from "firebase/database";
+import { initializeApp } from 'firebase/app';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
 import "firebase/storage"
 import { getAnalytics } from "firebase/analytics";
 // import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
@@ -31,7 +38,8 @@ const firebase = {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
-  database
+  database,
+  signOut
 }
 
 export default firebase;

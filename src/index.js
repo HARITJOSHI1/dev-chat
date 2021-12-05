@@ -5,7 +5,7 @@ import { createStore } from "redux";
 import { Provider, connect } from "react-redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import reducer from "./components/reducers";
-import { setUser } from "./components/actions";
+import { setUser, clearUser } from "./components/actions";
 import Loader from "react-loader-spinner";
 
 import {
@@ -28,6 +28,11 @@ class Root extends React.Component {
       if (user) {
         this.props.setUser(user);
         this.props.history.push("/");
+      }
+
+      else {
+        this.props.clearUser();
+        this.props.history.push("/login");
       }
     });
   }
@@ -59,7 +64,7 @@ const mapStateToProps = (state) => {
   return { isLoading: state.user.isLoading };
 };
 
-const AppWithAuth = withRouter(connect(mapStateToProps, { setUser })(Root));
+const AppWithAuth = withRouter(connect(mapStateToProps, { setUser, clearUser })(Root));
 
 ReactDOM.render(
   <Provider store={store}>
