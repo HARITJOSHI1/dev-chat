@@ -45,7 +45,7 @@ class UserPanel extends Component {
                         </Header>
                         <Header>
                             <Image src={user.photoURL} spaced="right" size="small" avatar />
-                            <Dropdown style={{ color: "#ffffff" }} trigger={<span>{user.displayName}</span>} options={this.dropdownOptions()} />
+                            <Dropdown style={{ color: "#ffffff", fontSize: "1.2rem" }} trigger={<span>{user.displayName}</span>} options={this.dropdownOptions()} />
                         </Header>
                     </Grid.Row>
                 </Grid.Column>
