@@ -7,8 +7,8 @@ import {
   onAuthStateChanged,
   signOut
 } from "firebase/auth";
-import { getDatabase, ref, set, push, update, child, onValue, off} from "firebase/database";
-import "firebase/storage"
+import { getDatabase, ref, set, push, update, child, onValue, off } from "firebase/database";
+import { getStorage, uploadBytesResumable, getDownloadURL, ref as sref} from "firebase/storage";
 import { getAnalytics } from "firebase/analytics";
 // import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 
@@ -37,6 +37,15 @@ const database = {
   off
 }
 
+const storage = {
+  getStorage, 
+  sref, 
+  onValue,
+  uploadBytesResumable, 
+  getDownloadURL,
+  child
+}
+
 const firebase = {
   auth: getAuth,
   onAuthStateChanged,
@@ -44,6 +53,7 @@ const firebase = {
   signInWithEmailAndPassword,
   updateProfile,
   database,
+  storage,
   signOut
 }
 

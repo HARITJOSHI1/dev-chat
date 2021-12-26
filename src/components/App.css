@@ -1,21 +1,29 @@
 html,
 body,
 .app {
-    height: 100vh;
-    background-color: #eee;
-    padding: 1em;
+  height: 100vh;
+  background-color: #eee;
+  padding: 1em;
 }
 
 .messages {
-    height: 405px;
-    overflow-y: scroll;
+  height: 405px;
+  overflow-y: scroll;
 }
 
 .message__form {
-    position: fixed !important;
-    bottom: .5rem;
-    margin-left: 320px !important;
-    left: 0;
-    right: 1em;
-    z-index: 200;
+  position: fixed !important;
+  bottom: 0.5rem;
+  margin-left: 320px !important;
+  left: 0;
+  right: 1em;
+  z-index: 200;
+}
+
+.message__image {
+  padding: 1em;
+}
+
+.progress__bar {
+  margin: 0.3em 0 0 0 !important;
 }
