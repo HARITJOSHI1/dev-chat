@@ -7,7 +7,7 @@ import {
   onAuthStateChanged,
   signOut
 } from "firebase/auth";
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, set, push, update, child, onValue, off } from "firebase/database";
 import "firebase/storage"
 import { getAnalytics } from "firebase/analytics";
 // import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
@@ -29,7 +29,12 @@ getAnalytics(app);
 const database = {
   getDatabase,
   ref,
-  set
+  set,
+  push,
+  update,
+  child,
+  onValue,
+  off
 }
 
 const firebase = {
