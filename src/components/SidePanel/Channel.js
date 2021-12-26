@@ -37,6 +37,7 @@ class Channel extends Component {
     }
 
     addChannel({ channelName, channelDetails, user }) {
+        console.log(channelName, channelDetails);
         const { push, ref, child, set, update, getDatabase } = firebase.database;
         const db = getDatabase();
         const key = push(child(ref(db), 'channels')).key;
