@@ -33,7 +33,9 @@ class Channel extends Component {
     }
 
     componentWillUnmount(){
-        firebase.database.off();
+        const { push, ref, child, set, update, getDatabase, off} = firebase.database;
+        const db = getDatabase();
+        off(ref(db));   
     }
 
     addChannel({ channelName, channelDetails, user }) {

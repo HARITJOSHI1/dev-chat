@@ -31,8 +31,8 @@ class Root extends React.Component {
       }
 
       else {
+        this.props.history.push("/register");
         this.props.clearUser();
-        this.props.history.push("/login");
       }
     });
   }
@@ -52,9 +52,9 @@ class Root extends React.Component {
       />
     ) : (
       <Switch>
-        <Route exact path="/" component={App} />
-        <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/" component={App} />
       </Switch>
     );
   }
