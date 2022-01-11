@@ -7,7 +7,12 @@ body,
 }
 
 .messages {
-  height: 405px;
+  height: 61vh;
+  overflow-y: scroll;
+}
+
+.messages__progress{
+  height: 56.5vh;
   overflow-y: scroll;
 }
 

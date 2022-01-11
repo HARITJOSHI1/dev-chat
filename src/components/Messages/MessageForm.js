@@ -34,7 +34,10 @@ class MessageForm extends React.Component {
             uploadTask.on('state_changed',
                 (snapshot) => {
                     const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    if (snapshot.state === "running") this.setState({ percentageUploaded: progress });
+                    if (snapshot.state === "running") {
+                        this.props.isProgressBar(progress);
+                        this.setState({ percentageUploaded: progress });
+                    }
                 },
 
                 (error) => {
