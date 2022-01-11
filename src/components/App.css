@@ -11,6 +11,11 @@ body,
   overflow-y: scroll;
 }
 
+.message__self{
+  border-left: 2.5px solid orange;
+  padding-left: .7rem;
+}
+
 .messages__progress{
   height: 56.5vh;
   overflow-y: scroll;

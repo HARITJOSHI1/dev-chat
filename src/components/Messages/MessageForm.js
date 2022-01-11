@@ -79,7 +79,6 @@ class MessageForm extends React.Component {
 
     componentDidUpdate() {
         this.channel = this.props.currentChannel;
-        console.log(this.state.percentageUploaded);
     }
 
     onMessageChange = (e) => {
