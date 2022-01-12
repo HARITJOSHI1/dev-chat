@@ -11,6 +11,10 @@ body,
   overflow-y: scroll;
 }
 
+.menu {
+  padding-bottom: 2em;
+}
+
 .message__self{
   border-left: 2.5px solid orange;
   padding-left: .7rem;

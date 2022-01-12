@@ -48,7 +48,14 @@ class MessageForm extends React.Component {
                     // Handle successful uploads on complete
                     // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        this.sendFileMessage(downloadURL, pathToUpload);
+                        if (!this.props.isPrivate) this.sendFileMessage(downloadURL, pathToUpload);
+                        else {
+                            const [user, currentUser] = this.channel.id.split('/');
+                            const path1 = `${user}/${currentUser}`;
+                            const path2 = `${currentUser}/${user}`;
+                            this.sendFileMessage(downloadURL, path1);
+                            this.sendFileMessage(downloadURL, path2);
+                        }
                     });
                 }
             );
@@ -79,6 +86,7 @@ class MessageForm extends React.Component {
 
     componentDidUpdate() {
         this.channel = this.props.currentChannel;
+        console.log(this.channel);
     }
 
     onMessageChange = (e) => {
@@ -102,7 +110,7 @@ class MessageForm extends React.Component {
         return message;
     }
 
-    sendMessage = (message) => {
+    sendMessage = (message, path) => {
         this.setState({ loading: true });
         if (message) {
             const { push, ref, child, set, getDatabase } = firebase.database;
@@ -110,7 +118,7 @@ class MessageForm extends React.Component {
             const id = push(child(ref(db), this.channel.id)).key;
 
             set(
-                ref(db, `messages/${this.channel.id}/` + id),
+                ref(db, path + `/${id}`),
                 this.createMessage()
             )
                 .then(() => {
@@ -151,7 +159,18 @@ class MessageForm extends React.Component {
                 />{" "}
                 <Button.Group icon widths="2">
                     <Button
-                        onClick={this.sendMessage.bind(this, message)}
+                        onClick={() => {
+                            if (!this.props.isPrivate) this.sendMessage(message, `messages/${this.channel.id}/`);
+
+                            else {
+                                const [user, currentUser] = this.channel.id.split('/');
+                                const path1 = `messages/${user}/${currentUser}`;
+                                const path2 = `messages/${currentUser}/${user}`;
+                                this.sendMessage(message, path1);
+                                this.sendMessage(message, path2);
+                            }
+                        }
+                        }
                         color="orange"
                         content="Add Reply"
                         labelPosition="left"
@@ -180,6 +199,7 @@ class MessageForm extends React.Component {
 const mapStateToProps = (state) => {
     return {
         currentChannel: state.channel.currentChannel,
+        isPrivate: state.channel.isPrivate
     };
 };
 
