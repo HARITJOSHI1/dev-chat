@@ -1,8 +1,8 @@
 import React from 'react';
 import { Menu, Icon } from 'semantic-ui-react';
 import firebase from '../../firebase';
-import {setCurrentChannel, setPrivateChannel} from "../actions";
-import {connect} from "react-redux";
+import { setCurrentChannel, setPrivateChannel } from "../actions";
+import { connect } from "react-redux";
 
 class DirectMessages extends React.Component {
     state = {
@@ -11,6 +11,13 @@ class DirectMessages extends React.Component {
     }
 
     componentDidMount() {
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            const {ref, getDatabase, remove} = firebase.database;
+            const db = getDatabase();
+            remove(ref(db, `/presence/${user.uid}`));
+        });
+
         const { user } = this.state;
         let loadedUser = [];
         const { ref, onChildAdded, getDatabase } = firebase.database;
@@ -57,8 +64,8 @@ class DirectMessages extends React.Component {
 
     isUserOnline = user => user.status === "online";
     handlePrivateChannel = (user) => {
-        const{user: currentUser} = this.state;
-        const channelId =  `${user.uid}/${currentUser.uid}`;
+        const { user: currentUser } = this.state;
+        const channelId = `${user.uid}/${currentUser.uid}`;
         const channelInfo = {
             id: channelId,
             name: user.name
@@ -97,4 +104,4 @@ class DirectMessages extends React.Component {
     }
 }
 
-export default connect(null, {setCurrentChannel, setPrivateChannel})(DirectMessages);
+export default connect(null, { setCurrentChannel, setPrivateChannel })(DirectMessages);
