@@ -7,7 +7,8 @@ import { connect } from "react-redux";
 class DirectMessages extends React.Component {
     state = {
         user: this.props.currentUser.createdUser,
-        users: []
+        users: [],
+        active: null
     }
 
     componentDidMount() {
@@ -16,7 +17,7 @@ class DirectMessages extends React.Component {
             const {ref, getDatabase, remove} = firebase.database;
             const db = getDatabase();
             remove(ref(db, `/presence/${user.uid}`));
-        });
+        }, false);
 
         const { user } = this.state;
         let loadedUser = [];
@@ -35,13 +36,19 @@ class DirectMessages extends React.Component {
     }
 
     addOnlineUser = () => {
-        const { user } = this.state;
+        const { user} = this.state;
         const { ref, onChildAdded, getDatabase, set, onChildRemoved } = firebase.database;
         const db = getDatabase();
+        let flag = false;
         set(ref(db, `presence/${user.uid}`), true);
         onChildAdded(ref(db, "presence/"), (snap) => {
-            if (user.id !== snap.key) this.addStatus(snap.key, true);
+            if (user.uid !== snap.key){
+                this.addStatus(snap.key, true);
+                flag = true;
+            }
         });
+
+        if(!flag) this.addStatus(null, false);
 
         onChildRemoved(ref(db, "presence/"), (snap) => {
             if (user.id !== snap.key) this.addStatus(snap.key, false);
@@ -51,7 +58,7 @@ class DirectMessages extends React.Component {
     addStatus = (userId, connected = true) => {
         const { users } = this.state;
         if (users.length) {
-            const updatedActiveUsers = this.state.users.map((user) => {
+            const updatedActiveUsers = users.map((user) => {
                 if (user.uid === userId) {
                     user['status'] = (connected ? 'online' : 'offline');
                 }
@@ -63,6 +70,10 @@ class DirectMessages extends React.Component {
     }
 
     isUserOnline = user => user.status === "online";
+    isSelected = (idx) => {
+        this.setState({active: idx});
+    }
+
     handlePrivateChannel = (user) => {
         const { user: currentUser } = this.state;
         const channelId = `${user.uid}/${currentUser.uid}`;
@@ -77,7 +88,6 @@ class DirectMessages extends React.Component {
 
     render() {
         const { users } = this.state;
-
         return (
             <Menu.Menu className="menu">
                 <Menu.Item>
@@ -86,10 +96,14 @@ class DirectMessages extends React.Component {
                     </span>{' '}
                     ({users.length})
                 </Menu.Item>
-                {users.map(user => (
+                {users.map((user, idx) => (
                     <Menu.Item
                         key={user.uid}
-                        onClick={this.handlePrivateChannel.bind(this, user)}
+                        active = {idx === this.state.active}
+                        onClick={() => {
+                            this.handlePrivateChannel(user);
+                            this.isSelected(idx);
+                        }}
                         style={{ opacity: 0.7, fontStyle: "italic" }}
                     >
                         <Icon

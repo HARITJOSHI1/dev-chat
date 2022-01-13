@@ -70,7 +70,6 @@ const Messages = ({ currentChannel, currentUser }) => {
 
     const plural = (uniqueUser.length > 1) || false;
     const length = uniqueUser.length;
-    console.log(length);
     const numUser = length && plural ? `${length} users` : `1 user`;
     countUser(numUser);
   }
