@@ -48,7 +48,18 @@ const channel = (state = initialChannel, action) => {
   }
 };
 
+const notifications = (state = [], action) =>{
+  switch(action.type){
+    case actionTypes.SET_NOTIFY_CHANNEL:
+      return [ ...action.payload.notifications];
+
+    default:
+      return state;  
+  }
+}
+
 export default combineReducers({
   user: user_reducer,
-  channel
+  channel,
+  notifications
 })

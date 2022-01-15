@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import firebase from "../../firebase";
 import FileModal from "./FileModal";
 import ProgressBar from "./ProgressBar";
+import { setNotifications } from "../actions";
+import { onValue } from "firebase/database";
 
 class MessageForm extends React.Component {
     channel;
@@ -63,7 +65,7 @@ class MessageForm extends React.Component {
     }
 
     sendFileMessage(fileUrl, pathToUpload) {
-        const { push, ref, child, set, getDatabase } = firebase.database;
+        const { push, ref, child, set, getDatabase, onValue } = firebase.database;
         const db = getDatabase();
         const id = push(child(ref(db), pathToUpload)).key;
 
@@ -73,6 +75,7 @@ class MessageForm extends React.Component {
         )
             .then(() => {
                 this.setState({ loading: false, uploadState: "done" });
+                this.updatedNotifications();
             })
             .catch((err) => {
                 console.error(err);
@@ -82,6 +85,25 @@ class MessageForm extends React.Component {
                     error: this.state.errors.concat(err),
                 });
             });
+    }
+
+    updatedNotifications = () => {
+        const { ref, getDatabase, onValue } = firebase.database;
+        const db = getDatabase();
+        onValue(ref(db, `messages/${this.channel.id}`), (snap) => {
+            const data = snap.val();
+            const total = Object.keys(data).length;
+            console.log(total);
+            const { notifications, setNotifications } = this.props;
+            notifications.forEach(notif => {
+                if (notif.id === this.channel.id) {
+                    notif.total = total;
+                    notif.lastTotal = total;
+                }
+            });
+
+            setNotifications(notifications);
+        });
     }
 
     componentDidUpdate() {
@@ -122,6 +144,7 @@ class MessageForm extends React.Component {
             )
                 .then(() => {
                     this.setState({ loading: false, message: "" });
+                    this.updatedNotifications();
                 })
                 .catch((err) => {
                     console.error(err);
@@ -198,8 +221,9 @@ class MessageForm extends React.Component {
 const mapStateToProps = (state) => {
     return {
         currentChannel: state.channel.currentChannel,
-        isPrivate: state.channel.isPrivate
+        isPrivate: state.channel.isPrivate,
+        notifications: state.notifications
     };
 };
 
-export default connect(mapStateToProps)(MessageForm);
+export default connect(mapStateToProps, { setNotifications })(MessageForm);

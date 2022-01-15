@@ -32,3 +32,12 @@ export const setPrivateChannel = isPrivate => {
         }
     }
 }
+
+export const setNotifications = notifications => {
+    return {
+        type: actionTypes.SET_NOTIFY_CHANNEL,
+        payload: {
+            notifications
+        }
+    }
+}
