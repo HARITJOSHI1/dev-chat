@@ -13,14 +13,14 @@ const App = ({ currentUser, currentChannel }) => {
       <ColorPanel />
       <SidePanel currentUser={currentUser} />
 
-      <Grid.Column style={{ marginLeft: 320, width: '40%' }}>
+      <Grid.Column style={{ marginLeft: 320, width: '48%' }}>
         <Messages
           currentUser={currentUser}
           currentChannel={currentChannel}
         />
       </Grid.Column>
 
-      <Grid.Column>
+      <Grid.Column style={{marginLeft: 10, width: '30%' }}>
         <MetaPanel />
       </Grid.Column>
     </Grid>
