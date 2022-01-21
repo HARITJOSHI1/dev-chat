@@ -7,7 +7,7 @@ import SidePanel from "./SidePanel";
 import Messages from "./Messages";
 import MetaPanel from "./MetaPanel";
 
-const App = ({ currentUser, currentChannel }) => {
+const App = ({ currentUser, currentChannel, channel }) => {
   return (
     <Grid column="equal" className="app" style={{ backgroundColor: '#eee' }}>
       <ColorPanel />
@@ -21,7 +21,7 @@ const App = ({ currentUser, currentChannel }) => {
       </Grid.Column>
 
       <Grid.Column style={{marginLeft: 10, width: '30%' }}>
-        <MetaPanel />
+        <MetaPanel channel={channel}/>
       </Grid.Column>
     </Grid>
   );
@@ -30,7 +30,8 @@ const App = ({ currentUser, currentChannel }) => {
 const mapStateToProps = (state) => {
   return {
     currentUser: state.user.currentUser,
-    currentChannel: state.channel.currentChannel
+    currentChannel: state.channel.currentChannel,
+    channel: state.channel
   };
 }
 
