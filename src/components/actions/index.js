@@ -50,3 +50,12 @@ export const setTopPosters = posters => {
         }
     }
 }
+
+export const setColors = (primary, secondary) => {
+    return {
+        type: actionTypes.SET_COLORS,
+        payload: {
+            primary, secondary
+        }
+    }
+}

@@ -11,6 +11,11 @@ const initialChannel = {
   isPrivate: false
 };
 
+const initialColors = {
+  primary: "#4c3c4c",
+  secondary: "#eee"
+};
+
 const user_reducer = (state = initialUser, action) => {
   switch (action.type) {
     case actionTypes.SET_USER:
@@ -83,9 +88,20 @@ const topPosters = (state = {}, action) => {
   }
 }
 
+const colors = (state = initialColors, action) => {
+  switch (action.type) {
+    case actionTypes.SET_COLORS:
+      return {...action.payload};
+
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   user: user_reducer,
   channel,
   notifications,
-  topPosters
+  topPosters,
+  colors
 })

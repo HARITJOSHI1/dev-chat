@@ -41,7 +41,7 @@ dropdownOptions = () => [
 render() {
     const { user } = this.state;
     return (
-        <Grid style={{ backgroundColor: "#4c3c4c" }}>
+        <Grid style={{ backgroundColor: this.props.primaryColor }}>
             <Grid.Column>
                 <Grid.Row style={{ padding: "2rem", margin: 0 }}>
                     <Header inverted floated="left" as="h2">

@@ -13,10 +13,10 @@ class SidePanel extends React.Component {
         inverted
         fixed="left"
         vertical
-        style={{ backgroundColor: '#4c3c4c', fontSize: '1.2 rem' }}
+        style={{ backgroundColor: this.props.primaryColor, fontSize: '1.2 rem' }}
       >
 
-        <UserPanel currentUser= {this.props.currentUser}/>
+        <UserPanel primaryColor = {this.props.primaryColor} currentUser= {this.props.currentUser}/>
         <Starred />
         <Channel currentUser= {this.props.currentUser}/>
         <DirectMessages currentUser= {this.props.currentUser}/>
