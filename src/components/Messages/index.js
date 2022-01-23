@@ -225,77 +225,73 @@ const Messages = ({ currentChannel, currentUser, setTopPosters, isPrivate }) => 
 
     return d ? true : false;
   }
-}
 
-return null;
-
-
-const displayTypingContent = (numAreTypingUsers) => {
-  if (numAreTypingUsers > 1) {
-    return `${numAreTypingUsers} others are typing`;
-  }
-  return `${numAreTypingUsers} user is typing`;
-}
-
-
-const displayPrivateTypingUsers = () => {
-  if (privateTypingUsers.length == 1) {
-    const user = privateTypingUsers[0];
-    console.log(user);
-    if (user) {
-      return (
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }}>
-          <span className="user__typing">{user.name} is typing</span>
-          <Typing />
-        </div>
-      );
+  const displayTypingContent = (numAreTypingUsers) => {
+    if (numAreTypingUsers > 1) {
+      return `${numAreTypingUsers} others are typing`;
     }
+    return `${numAreTypingUsers} user is typing`;
+  }
 
+
+  const displayPrivateTypingUsers = () => {
+    if (privateTypingUsers.length == 1) {
+      const user = privateTypingUsers[0];
+      if (user) {
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }}>
+            <span className="user__typing">{user.name} is typing</span>
+            <Typing />
+          </div>
+        );
+      }
+
+      else return null;
+    }
     else return null;
   }
-  else return null;
-}
 
-const displayTypingUsers = () => {
-  if (isPrivate) {
-    return displayPrivateTypingUsers();
-  }
+  const displayTypingUsers = () => {
+    if (isPrivate) {
+      return displayPrivateTypingUsers();
+    }
 
-  if (typingUsers.length > 0) {
-    for (let el of typingUsers) {
-      if (el[channel.id] === channel.id) {
-        const numAreTypingUsers = typingUsers.length;
-        return (<div style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }}>
-          <span className="user__typing">{displayTypingContent(numAreTypingUsers)}</span>
-          <Typing />
-        </div>);
+    if (typingUsers.length > 0) {
+      for (let el of typingUsers) {
+        if (el[channel.id] === channel.id) {
+          const numAreTypingUsers = typingUsers.length;
+          return (<div style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }}>
+            <span className="user__typing">{displayTypingContent(numAreTypingUsers)}</span>
+            <Typing />
+          </div>);
+        }
       }
     }
+    else return null;
   }
 
-  return null;
+  return (
+    <React.Fragment>
+      <MessageHeader
+        handleSearchChange={handleSearchChange}
+        channelName={displayChannelName(channel)}
+        isStarred={checkToStarr(channel)}
+        users={users}
+        handleStarred={handleStarred}
+      />
+
+      <Segment>
+        <Comment.Group className={progressBar ? 'messages__progress' : 'messages'}>
+          {searchTerm ? displayMessages(searchResults) : displayMessages(messagesArray)}
+          {displayTypingUsers()}
+        </Comment.Group>
+      </Segment>
+
+      <MessageForm isProgressBar={isProgressBar} currentUser={currentUser} />
+    </React.Fragment>
+  )
+
 }
-
-return (
-  <React.Fragment>
-    <MessageHeader
-      handleSearchChange={handleSearchChange}
-      channelName={displayChannelName(channel)}
-      isStarred={checkToStarr(channel)}
-      users={users}
-      handleStarred={handleStarred}
-    />
-
-    <Segment>
-      <Comment.Group className={progressBar ? 'messages__progress' : 'messages'}>
-        {searchTerm ? displayMessages(searchResults) : displayMessages(messagesArray)}
-        {displayTypingUsers()}
-      </Comment.Group>
-    </Segment>
-
-    <MessageForm isProgressBar={isProgressBar} currentUser={currentUser} />
-  </React.Fragment>
-)
 
 const mapStateToProps = state => {
   return {

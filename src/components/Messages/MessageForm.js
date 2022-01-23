@@ -93,7 +93,6 @@ class MessageForm extends React.Component {
         onValue(ref(db, `messages/${this.channel.id}`), (snap) => {
             const data = snap.val();
             const total = Object.keys(data).length;
-            console.log(total);
             const { notifications, setNotifications } = this.props;
             notifications.forEach(notif => {
                 if (notif.id === this.channel.id) {
