@@ -46,7 +46,7 @@ class Channel extends Component {
 
         onValue(ref(db, `messages/${channelId}`), (snap) => {
             const data = snap.val();
-            if(this.state.channel && data) total = Object.keys(data).length;
+            if (this.state.channel && data) total = Object.keys(data).length;
 
             onChildAdded(ref(db, `messages/${channelId}`), (snap) => {
                 if (this.state.channel) {
@@ -129,6 +129,10 @@ class Channel extends Component {
     }
 
     setCurrentChannel(channel) {
+        const { ref, getDatabase, remove } = firebase.database;
+        const db = getDatabase();
+        const typingRef = ref(db, `typing/${this.state.activeChannel}/${this.state.user.uid}`);
+        remove(typingRef);
         this.props.setCurrentChannel(channel);
         this.setState({ channel });
         this.setState({ activeChannel: channel.id });
@@ -153,7 +157,7 @@ class Channel extends Component {
             return (e.id === channel.id) && (e.total > 0);
         });
 
-        if(el) count = el.count;
+        if (el) count = el.count;
         return count;
     }
 
@@ -168,7 +172,7 @@ class Channel extends Component {
                 active={channel.id === this.state.activeChannel}
             >
                 # {channel.name}
-                {this.getNotificationsCount(channel)?<Label color="red">{this.getNotificationsCount(channel)}</Label> : null
+                {this.getNotificationsCount(channel) ? <Label color="red">{this.getNotificationsCount(channel)}</Label> : null
                 }
             </Menu.Item>
         ))

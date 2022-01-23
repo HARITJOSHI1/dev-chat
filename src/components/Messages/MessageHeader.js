@@ -1,17 +1,17 @@
 import React from "react";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import { Header, Segment, Input, Icon } from "semantic-ui-react";
 
 class MessagesHeader extends React.Component {
-   
+
     render() {
-        const { 
-            channelName, 
-            users, 
-            handleSearchChange, 
-            handleStarred, 
-            isStarred, 
-            isPrivate 
+        const {
+            channelName,
+            users,
+            handleSearchChange,
+            handleStarred,
+            isStarred,
+            isPrivate
         } = this.props;
 
         return (
@@ -19,8 +19,8 @@ class MessagesHeader extends React.Component {
                 {/* Channel Title */}
                 <Header fluid="true" as="h2" floated="left" style={{ marginBottom: 0 }}>
                     <span>
-                        {channelName}
-                        {!isPrivate  && ( <Icon
+                        {isPrivate?  `@ ${channelName.slice(1)}` : channelName}
+                        {!isPrivate && (<Icon
                             onClick={handleStarred}
                             name={isStarred ? "star" : "star outline"}
                             color={isStarred ? "yellow" : "black"}
