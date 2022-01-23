@@ -14,9 +14,10 @@ class DirectMessages extends React.Component {
     componentDidMount() {
         window.addEventListener('beforeunload', function (e) {
             e.preventDefault();
-            const {ref, getDatabase, remove} = firebase.database;
+            const { ref, getDatabase, remove } = firebase.database;
             const db = getDatabase();
             remove(ref(db, `/presence/${user.uid}`));
+            remove(ref(db, `typing/${this.props.channel.id}/${user.uid}`));
         }, false);
 
         const { user } = this.state;
@@ -36,19 +37,19 @@ class DirectMessages extends React.Component {
     }
 
     addOnlineUser = () => {
-        const { user} = this.state;
+        const { user } = this.state;
         const { ref, onChildAdded, getDatabase, set, onChildRemoved } = firebase.database;
         const db = getDatabase();
         let flag = false;
         set(ref(db, `presence/${user.uid}`), true);
         onChildAdded(ref(db, "presence/"), (snap) => {
-            if (user.uid !== snap.key){
+            if (user.uid !== snap.key) {
                 this.addStatus(snap.key, true);
                 flag = true;
             }
         });
 
-        if(!flag) this.addStatus(null, false);
+        if (!flag) this.addStatus(null, false);
 
         onChildRemoved(ref(db, "presence/"), (snap) => {
             if (user.id !== snap.key) this.addStatus(snap.key, false);
@@ -71,7 +72,7 @@ class DirectMessages extends React.Component {
 
     isUserOnline = user => user.status === "online";
     isSelected = (idx) => {
-        this.setState({active: idx});
+        this.setState({ active: idx });
     }
 
     handlePrivateChannel = (user) => {
@@ -99,7 +100,7 @@ class DirectMessages extends React.Component {
                 {users.map((user, idx) => (
                     <Menu.Item
                         key={user.uid}
-                        active = {idx === this.state.active}
+                        active={idx === this.state.active}
                         onClick={() => {
                             this.handlePrivateChannel(user);
                             this.isSelected(idx);
@@ -118,4 +119,10 @@ class DirectMessages extends React.Component {
     }
 }
 
-export default connect(null, { setCurrentChannel, setPrivateChannel })(DirectMessages);
+const mapStateToProps = (state) => {
+    return {
+        channel: state.channel.currenyChannel
+    }
+}
+
+export default connect(mapStateToProps, { setCurrentChannel, setPrivateChannel })(DirectMessages);

@@ -134,7 +134,7 @@ class MessageForm extends React.Component {
     sendMessage = (message, path) => {
         this.setState({ loading: true });
         if (message) {
-            const { push, ref, child, set, getDatabase } = firebase.database;
+            const { push, ref, child, set, getDatabase, remove } = firebase.database;
             const db = getDatabase();
             const id = push(child(ref(db), this.channel.id)).key;
 
@@ -145,6 +145,8 @@ class MessageForm extends React.Component {
                 .then(() => {
                     this.setState({ loading: false, message: "" });
                     this.updatedNotifications();
+                    const typingRef = ref(db, `typing/${this.channel.id}/${this.state.user.uid}`);
+                    remove(typingRef);
                 })
                 .catch((err) => {
                     console.error(err);
@@ -162,6 +164,22 @@ class MessageForm extends React.Component {
         }
     };
 
+    onTyping = () => {
+        if (this.state.message) {
+            const { set, ref, getDatabase } = firebase.database;
+            const db = getDatabase();
+            const typingRef = ref(db, `typing/${this.channel.id}/${this.state.user.uid}`);
+            set(typingRef, this.state.user.displayName);
+        }
+
+        else {
+            const { ref, getDatabase, remove } = firebase.database;
+            const db = getDatabase();
+            const typingRef = ref(db, `typing/${this.channel.id}/${this.state.user.uid}`);
+            remove(typingRef);
+        }
+    }
+
     render() {
         const { message, errors, modal, uploadState, percentageUploaded } = this.state;
         return (
@@ -171,6 +189,7 @@ class MessageForm extends React.Component {
                     value={message}
                     name="message"
                     onChange={this.onMessageChange}
+                    onKeyDown={this.onTyping}
                     style={{ marginBottom: "0.7em" }}
                     label={<Button icon={"add"} />}
                     labelPosition="left"

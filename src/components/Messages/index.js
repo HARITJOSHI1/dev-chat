@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Segment, Comment } from "semantic-ui-react";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import MessageHeader from "./MessageHeader";
 import MessageForm from "./MessageForm";
 import firebase from "../../firebase";
 import Message from "./Message";
-import {setTopPosters} from "../actions";
+import { setTopPosters } from "../actions";
+import Typing from "./Typing";
 
 const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
   const [channel, setChannel] = useState(null);
@@ -14,6 +15,7 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
   const [users, countUser] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearched] = useState([]);
+  const [typingUsers, setTypingUsers] = useState([]);
   const [isStarred, setStarred] = useState(false);
 
   const displayChannelName = channel => channel ? `#${channel.name}` : " ";
@@ -26,15 +28,15 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
   }
 
   const addStarred = (isStarred) => {
-    const {createdUser: cu} = currentUser;
-    const {ref, set, getDatabase, remove} = firebase.database;
+    const { createdUser: cu } = currentUser;
+    const { ref, set, getDatabase, remove } = firebase.database;
     const db = getDatabase();
-    if(isStarred){
+    if (isStarred) {
       const info = {
         name: currentChannel.name,
         details: currentChannel.details,
         id: currentChannel.id,
-        createdBy : {
+        createdBy: {
           avatar: cu.photoURL,
           name: cu.displayName
         }
@@ -45,20 +47,53 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
     else remove(ref(db, `users/${cu.uid}/starred/${currentChannel.id}`));
   }
 
+  const setTypingListeners = (channel) => {
+    const { ref, set, getDatabase, remove, onValue, onChildRemoved } = firebase.database;
+    const db = getDatabase();
+    onValue(ref(db, `typing/${channel.id}`), snap => {
+      const data = snap.val();
+      let temp = [];
+      if (data) {
+        if(typingUsers.length) temp = [];
+        for (const key in data) {
+          if (key !== currentUser.createdUser.uid) {
+            temp = temp.concat(data);
+          }
+        }
+        setTypingUsers((state) => state = temp);
+      }
+
+      else{
+        setTypingUsers([]);
+      }
+    });
+
+    onChildRemoved((ref(db, `typing/${channel.id}`)), snap => {
+      const obj = {}
+      let temp = [];
+      obj[snap.key] = snap.val();
+      const idx = typingUsers.findIndex((el) => el[snap.key] === obj[snap.key]);
+      if (idx !== -1) temp = typingUsers.splice(idx, 1);
+      setTypingUsers(temp);
+    });
+
+  }
+
   useEffect(() => {
     if (currentChannel && currentUser) {
       setChannel((state) => state = currentChannel);
       alreadyStarredInDB();
       getMessages();
+      setTypingListeners(currentChannel)
     }
   }, [currentChannel]);
 
   const alreadyStarredInDB = () => {
-    const {createdUser: cu} = currentUser;
-    const {ref, onValue, getDatabase} = firebase.database;
+    const { createdUser: cu } = currentUser;
+    const { ref, onValue, getDatabase } = firebase.database;
     const db = getDatabase();
     onValue(ref(db, `users/${cu.uid}/starred/${currentChannel.id}`), (snap) => {
-      if(snap.val()) setStarred(true);
+      if (snap.val()) setStarred(true);
     });
 
   }
@@ -90,7 +125,7 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
     let c = 0;
     messages.forEach((msg, idx) => {
       const posts = HashMap.get(msg.user.name);
-      if(posts) HashMap.set(msg.user.name, [posts[0] + 1, msg.user.avatar]);
+      if (posts) HashMap.set(msg.user.name, [posts[0] + 1, msg.user.avatar]);
       else HashMap.set(msg.user.name, [c + 1, msg.user.avatar]);
     });
 
@@ -144,18 +179,30 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
   }
 
   const checkToStarr = (channel) => {
-    const {createdUser: cu} = currentUser;
-    const {ref, onValue, getDatabase} = firebase.database;
+    const { createdUser: cu } = currentUser;
+    const { ref, onValue, getDatabase } = firebase.database;
     const db = getDatabase();
     let d;
     onValue(ref(db, `users/${cu.uid}/starred`), (snap) => {
       const data = snap.val();
-      if(data && channel){
-         d = data[channel.id];
+      if (data && channel) {
+        d = data[channel.id];
       }
     });
 
-    return d? true : false;
+    return d ? true : false;
+  }
+
+  const displayTypingUsers = () => {
+    if (typingUsers.length > 0) {
+      return (<div style={{ display: 'flex', alignItems: 'center', marginTop: "1rem"}}>
+        <span className="user__typing">Someone is typing</span>
+        <Typing />
+      </div>
+      );
+    }
+
+    return null;
   }
 
   return (
@@ -171,6 +218,7 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
       <Segment>
         <Comment.Group className={progressBar ? 'messages__progress' : 'messages'}>
           {searchTerm ? displayMessages(searchResults) : displayMessages(messagesArray)}
+          {displayTypingUsers()}
         </Comment.Group>
       </Segment>
 
@@ -179,4 +227,4 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
   )
 }
 
-export default connect(null, {setTopPosters})(Messages);
+export default connect(null, { setTopPosters })(Messages);
