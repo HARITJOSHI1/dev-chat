@@ -195,13 +195,7 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
   }
 
   const displayTypingUsers = () => {
-    // console.log(typingUsers);
     if (typingUsers.length > 0) {
-      let c = false;
-      // return (<div style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }}>
-      //       <span className="user__typing">Someone is typing</span>
-      //       <Typing />
-      //     </div>);
       for (let el of typingUsers) {
         if (el[channel.id] === channel.id) {
           return (<div style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }}>
