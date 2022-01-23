@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Segment, Comment } from "semantic-ui-react";
+import {connect} from "react-redux";
 import MessageHeader from "./MessageHeader";
 import MessageForm from "./MessageForm";
 import firebase from "../../firebase";
 import Message from "./Message";
+import {setTopPosters} from "../actions";
 
-const Messages = ({ currentChannel, currentUser }) => {
+const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
   const [channel, setChannel] = useState(null);
   const [messagesArray, setMessage] = useState([]);
   const [progressBar, setpg] = useState(false);
@@ -71,14 +73,28 @@ const Messages = ({ currentChannel, currentUser }) => {
       if (data) {
         loadedMsg = Object.keys(data).map(key => (data[key]));
         countUniqueUser(loadedMsg);
+        countTopPosters(loadedMsg);
         setMessage(loadedMsg);
       }
 
       else {
+        countTopPosters([]);
         countUniqueUser([]);
         setMessage([]);
       }
     });
+  }
+
+  const countTopPosters = messages => {
+    const HashMap = new Map();
+    let c = 0;
+    messages.forEach((msg, idx) => {
+      const posts = HashMap.get(msg.user.name);
+      if(posts) HashMap.set(msg.user.name, [posts[0] + 1, msg.user.avatar]);
+      else HashMap.set(msg.user.name, [c + 1, msg.user.avatar]);
+    });
+
+    setTopPosters(HashMap);
   }
 
   const handleSearchChange = (e) => setSearchTerm(e.target.value);
@@ -163,4 +179,4 @@ const Messages = ({ currentChannel, currentUser }) => {
   )
 }
 
-export default Messages;
+export default connect(null, {setTopPosters})(Messages);

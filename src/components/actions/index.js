@@ -41,3 +41,12 @@ export const setNotifications = notifications => {
         }
     }
 }
+
+export const setTopPosters = posters => {
+    return {
+        type: actionTypes.SET_TOP_POSTERS,
+        payload: {
+            posters
+        }
+    }
+}

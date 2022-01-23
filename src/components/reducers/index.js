@@ -42,24 +42,50 @@ const channel = (state = initialChannel, action) => {
         ...state,
         isPrivate: action.payload.isPrivate,
       };
-      
+
     default:
       return state;
   }
 };
 
-const notifications = (state = [], action) =>{
-  switch(action.type){
+const notifications = (state = [], action) => {
+  switch (action.type) {
     case actionTypes.SET_NOTIFY_CHANNEL:
-      return [ ...action.payload.notifications];
+      return [...action.payload.notifications];
 
     default:
-      return state;  
+      return state;
+  }
+}
+
+const topPosters = (state = {}, action) => {
+  switch (action.type) {
+    case actionTypes.SET_TOP_POSTERS:
+      let temp = [];
+      let obj = {};
+      if (action.payload.posters.size === 0) return obj;
+
+      action.payload.posters.forEach((value, key) => {
+        temp.push([key, value]);
+      });
+
+      temp.sort((a, b) => {
+        if (a[1][0] < b[1][0]) return 1;
+        else if (a[1][0] > b[1][0]) return -1;
+      });
+
+      temp.forEach(ele => obj[ele[0]] = ele[1]);
+
+      return obj;
+
+    default:
+      return state;
   }
 }
 
 export default combineReducers({
   user: user_reducer,
   channel,
-  notifications
+  notifications,
+  topPosters
 })
