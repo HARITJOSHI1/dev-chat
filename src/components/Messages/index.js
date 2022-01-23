@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Segment, Comment } from "semantic-ui-react";
 import MessageHeader from "./MessageHeader";
 import MessageForm from "./MessageForm";
@@ -11,6 +11,7 @@ const Messages = ({ currentChannel, currentUser }) => {
   const [progressBar, setpg] = useState(false);
   const [users, countUser] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearched] = useState([]);
 
   const displayChannelName = channel => channel ? `#${channel.name}` : " ";
 
@@ -19,7 +20,6 @@ const Messages = ({ currentChannel, currentUser }) => {
       setChannel((state) => state = currentChannel);
       getMessages();
     }
-
   }, [currentChannel]);
 
   const getMessages = () => {
@@ -35,7 +35,8 @@ const Messages = ({ currentChannel, currentUser }) => {
         setMessage(loadedMsg);
       }
 
-      else{
+      else {
+        countUniqueUser([]);
         setMessage([]);
       }
     });
@@ -43,17 +44,35 @@ const Messages = ({ currentChannel, currentUser }) => {
 
   const handleSearchChange = (e) => setSearchTerm(e.target.value);
 
-  const countUniqueUser = messages => {
-    const uniqueUser = messages.reduce((acc, message) => {
-      if(!acc.includes(message.user.name)) acc.push(message.user.name);
+  const searchMsg = () => {
+    const channelMsgs = [...messagesArray];
+    const regex = new RegExp(searchTerm, 'gi');
+    const searchResults = channelMsgs.reduce((acc, msg) => {
+      if ((msg.content && msg.content.match(regex)) ||
+        (msg.user.name.match(regex))) {
+        acc.push(msg);
+      }
       return acc;
     }, []);
 
-    const plural = (uniqueUser.length > 1 ) || false; 
-    const numUser = uniqueUser.length && plural ? `${uniqueUser.length} users` : "1 user";
-    countUser(numUser);
+    setSearched(searchResults);
   }
 
+  useMemo(() => {
+    return searchMsg();
+  }, [searchTerm]);
+
+  const countUniqueUser = messages => {
+    const uniqueUser = messages.reduce((acc, message) => {
+      if (!acc.includes(message.user.name)) acc.push(message.user.name);
+      return acc;
+    }, []);
+
+    const plural = (uniqueUser.length > 1) || false;
+    const length = uniqueUser.length;
+    const numUser = length && plural ? `${length} users` : `1 user`;
+    countUser(numUser);
+  }
 
   const displayMessages = messages =>
     messages.length > 0 &&
@@ -65,21 +84,21 @@ const Messages = ({ currentChannel, currentUser }) => {
       />
     ));
 
-    const isProgressBar = percent => {
-      if(percent > 0) setpg(true);
-    }
+  const isProgressBar = percent => {
+    if (percent > 0) setpg(true);
+  }
 
   return (
     <React.Fragment>
-      <MessageHeader searchTerm = {searchTerm} handleSearchChange = {handleSearchChange} channelName = {displayChannelName(channel)} users = {users}/>
+      <MessageHeader handleSearchChange={handleSearchChange} channelName={displayChannelName(channel)} users={users} />
 
       <Segment>
-        <Comment.Group className={progressBar? 'messages__progress' : 'messages'}>
-          {displayMessages(messagesArray)}
+        <Comment.Group className={progressBar ? 'messages__progress' : 'messages'}>
+          {searchTerm ? displayMessages(searchResults) : displayMessages(messagesArray)}
         </Comment.Group>
       </Segment>
 
-      <MessageForm isProgressBar = {isProgressBar} currentUser={currentUser} />
+      <MessageForm isProgressBar={isProgressBar} currentUser={currentUser} />
     </React.Fragment>
   )
 }

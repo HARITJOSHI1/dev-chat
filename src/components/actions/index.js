@@ -23,3 +23,21 @@ export const setCurrentChannel = channel => {
         }
     }
 }
+
+export const setPrivateChannel = isPrivate => {
+    return {
+        type: actionTypes.SET_PRIVATE_CHANNEL,
+        payload: {
+            isPrivate
+        }
+    }
+}
+
+export const setNotifications = notifications => {
+    return {
+        type: actionTypes.SET_NOTIFY_CHANNEL,
+        payload: {
+            notifications
+        }
+    }
+}
