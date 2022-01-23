@@ -194,12 +194,20 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
     return d ? true : false;
   }
 
+  const displayTypingContent = (numAreTypingUsers) => {
+    if(numAreTypingUsers > 1 ){
+      return `${numAreTypingUsers} others are typing`;
+    }
+    return `${numAreTypingUsers} user is typing`;
+  }
+
   const displayTypingUsers = () => {
-    if (typingUsers.length > 0) {
+    if (typingUsers.length > 0) { 
       for (let el of typingUsers) {
         if (el[channel.id] === channel.id) {
+          const numAreTypingUsers = typingUsers.length;
           return (<div style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }}>
-            <span className="user__typing">Someone is typing</span>
+            <span className="user__typing">{displayTypingContent(numAreTypingUsers)}</span>
             <Typing />
           </div>);
         }
