@@ -131,8 +131,15 @@ class Channel extends Component {
     setCurrentChannel(channel) {
         const { ref, getDatabase, remove } = firebase.database;
         const db = getDatabase();
-        const typingRef = ref(db, `typing/${this.state.activeChannel}/${this.state.user.uid}`);
-        remove(typingRef);
+        if (!this.props.isPrivate) {
+            const typingRef = ref(db, `typing/${this.props.currentChannel.id}/${this.state.user.uid}`);
+            remove(typingRef);
+        }
+
+        else {
+            const typingRef = ref(db, `privateTyping/${this.props.currentChannel.id}`);
+            remove(typingRef);
+        }
         this.props.setCurrentChannel(channel);
         this.setState({ channel });
         this.setState({ activeChannel: channel.id });
@@ -253,7 +260,9 @@ class Channel extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        notifications: state.notifications
+        notifications: state.notifications,
+        currentChannel: state.channel.currentChannel,
+        isPrivate: state.channel.isPrivate
     }
 }
 

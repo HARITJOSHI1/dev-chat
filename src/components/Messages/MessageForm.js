@@ -145,8 +145,15 @@ class MessageForm extends React.Component {
                 .then(() => {
                     this.setState({ loading: false, message: "" });
                     this.updatedNotifications();
-                    const typingRef = ref(db, `typing/${this.channel.id}/${this.state.user.uid}`);
-                    remove(typingRef);
+                    if (!this.props.isPrivate) {
+                        const typingRef = ref(db, `typing/${this.channel.id}/${this.state.user.uid}`);
+                        remove(typingRef);
+                    }
+
+                    else {
+                        const typingRef = ref(db, `privateTyping/${this.channel.id}`);
+                        remove(typingRef);
+                    }
                 })
                 .catch((err) => {
                     console.error(err);
@@ -168,15 +175,33 @@ class MessageForm extends React.Component {
         if (this.state.message) {
             const { set, ref, getDatabase } = firebase.database;
             const db = getDatabase();
-            const typingRef = ref(db, `typing/${this.channel.id}/${this.state.user.uid}`);
-            set(typingRef, this.state.user.displayName);
+            if (!this.props.isPrivate) {
+                const typingRef = ref(db, `typing/${this.channel.id}/${this.state.user.uid}`);
+                set(typingRef, this.state.user.displayName);
+            }
+
+            else {
+                const typingRef = ref(db, `privateTyping/${this.channel.id}`);
+                set(typingRef, {
+                    name: this.state.user.displayName,
+                    channelId: this.channel.id,
+                    userId: this.state.user.uid
+                });
+            }
         }
 
         else {
             const { ref, getDatabase, remove } = firebase.database;
             const db = getDatabase();
-            const typingRef = ref(db, `typing/${this.channel.id}/${this.state.user.uid}`);
-            remove(typingRef);
+            if (!this.props.isPrivate) {
+                const typingRef = ref(db, `typing/${this.channel.id}/${this.state.user.uid}`);
+                remove(typingRef);
+            }
+
+            else {
+                const typingRef = ref(db, `privateTyping/${this.channel.id}`);
+                remove(typingRef);
+            }
         }
     }
 

@@ -83,6 +83,18 @@ class DirectMessages extends React.Component {
             name: user.name
         }
 
+        const { ref, getDatabase, remove } = firebase.database;
+        const db = getDatabase();
+        if (!this.props.isPrivate) {
+            const typingRef = ref(db, `typing/${this.props.currentChannel.id}/${this.state.user.uid}`);
+            remove(typingRef);
+        }
+
+        else {
+            const typingRef = ref(db, `privateTyping/${this.props.currentChannel.id}`);
+            remove(typingRef);
+        }
+
         this.props.setCurrentChannel(channelInfo);
         this.props.setPrivateChannel(true);
     }
@@ -121,7 +133,8 @@ class DirectMessages extends React.Component {
 
 const mapStateToProps = (state) => {
     return {
-        channel: state.channel.currenyChannel
+        currentChannel: state.channel.currentChannel,
+        isPrivate: state.channel.isPrivate
     }
 }
 

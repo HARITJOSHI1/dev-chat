@@ -8,7 +8,7 @@ import Message from "./Message";
 import { setTopPosters } from "../actions";
 import Typing from "./Typing";
 
-const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
+const Messages = ({ currentChannel, currentUser, setTopPosters, isPrivate }) => {
   const [channel, setChannel] = useState(null);
   const [messagesArray, setMessage] = useState([]);
   const [progressBar, setpg] = useState(false);
@@ -16,6 +16,7 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearched] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
+  const [privateTypingUsers, setPrivateTypingUsers] = useState([]);
   const [isStarred, setStarred] = useState(false);
 
   const displayChannelName = channel => channel ? `#${channel.name}` : " ";
@@ -45,6 +46,36 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
     }
 
     else remove(ref(db, `users/${cu.uid}/starred/${currentChannel.id}`));
+  }
+
+
+  const setPrivateTypingListeners = (channel) => {
+    const { ref, set, getDatabase, remove, onValue, onChildRemoved } = firebase.database;
+    const db = getDatabase();
+    onValue(ref(db, `privateTyping/`), snap => {
+      const data = snap.val();
+      let temp = [];
+      const typingTo = channel.id.split('/')[0];
+      if (data) {
+        if (privateTypingUsers.length) temp = [];
+        for (const key in data) {
+          if (key === currentUser.createdUser.uid) {
+            const d = data[key][typingTo];
+            temp = temp.concat(d);
+          }
+        }
+        setPrivateTypingUsers((state) => state = temp);
+      }
+
+      else {
+        setPrivateTypingUsers([]);
+      }
+    });
+
+    onChildRemoved((ref(db, `privateTyping/${channel.id}`)), snap => {
+      setPrivateTypingUsers([]);
+    });
+
   }
 
   const setTypingListeners = (channel) => {
@@ -85,7 +116,8 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
       setChannel((state) => state = currentChannel);
       alreadyStarredInDB();
       getMessages();
-      setTypingListeners(currentChannel)
+      setTypingListeners(currentChannel);
+      setPrivateTypingListeners(currentChannel);
     }
   }, [currentChannel]);
 
@@ -193,25 +225,6 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
 
     return d ? true : false;
   }
-
-  const displayTypingContent = (numAreTypingUsers) => {
-    if(numAreTypingUsers > 1 ){
-      return `${numAreTypingUsers} others are typing`;
-    }
-    return `${numAreTypingUsers} user is typing`;
-  }
-
-  const displayTypingUsers = () => {
-    if (typingUsers.length > 0) { 
-      for (let el of typingUsers) {
-        if (el[channel.id] === channel.id) {
-          const numAreTypingUsers = typingUsers.length;
-          return (<div style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }}>
-            <span className="user__typing">{displayTypingContent(numAreTypingUsers)}</span>
-            <Typing />
-          </div>);
-        }
-      }
     }
 
     return null;
@@ -239,4 +252,10 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
   )
 }
 
-export default connect(null, { setTopPosters })(Messages);
+const mapStateToProps = state => {
+  return {
+    isPrivate: state.channel.isPrivate
+  }
+}
+
+export default connect(mapStateToProps, { setTopPosters })(Messages);
