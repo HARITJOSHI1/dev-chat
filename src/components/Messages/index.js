@@ -12,15 +12,54 @@ const Messages = ({ currentChannel, currentUser }) => {
   const [users, countUser] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearched] = useState([]);
+  const [isStarred, setStarred] = useState(false);
 
   const displayChannelName = channel => channel ? `#${channel.name}` : " ";
+
+  const handleStarred = () => {
+    setStarred((state) => {
+      setStarred(!state);
+      addStarred(!state);
+    });
+  }
+
+  const addStarred = (isStarred) => {
+    const {createdUser: cu} = currentUser;
+    const {ref, set, getDatabase, remove} = firebase.database;
+    const db = getDatabase();
+    if(isStarred){
+      const info = {
+        name: currentChannel.name,
+        details: currentChannel.details,
+        id: currentChannel.id,
+        createdBy : {
+          avatar: cu.photoURL,
+          name: cu.displayName
+        }
+      }
+      set(ref(db, `users/${cu.uid}/starred/${currentChannel.id}`), info);
+    }
+
+    else remove(ref(db, `users/${cu.uid}/starred/${currentChannel.id}`));
+  }
 
   useEffect(() => {
     if (currentChannel && currentUser) {
       setChannel((state) => state = currentChannel);
+      alreadyStarredInDB();
       getMessages();
     }
   }, [currentChannel]);
+
+  const alreadyStarredInDB = () => {
+    const {createdUser: cu} = currentUser;
+    const {ref, onValue, getDatabase} = firebase.database;
+    const db = getDatabase();
+    onValue(ref(db, `users/${cu.uid}/starred/${currentChannel.id}`), (snap) => {
+      if(snap.val()) setStarred(true);
+    });
+
+  }
 
   const getMessages = () => {
     let loadedMsg;
@@ -88,9 +127,30 @@ const Messages = ({ currentChannel, currentUser }) => {
     if (percent > 0) setpg(true);
   }
 
+  const checkToStarr = (channel) => {
+    const {createdUser: cu} = currentUser;
+    const {ref, onValue, getDatabase} = firebase.database;
+    const db = getDatabase();
+    let d;
+    onValue(ref(db, `users/${cu.uid}/starred`), (snap) => {
+      const data = snap.val();
+      if(data && channel){
+         d = data[channel.id];
+      }
+    });
+
+    return d? true : false;
+  }
+
   return (
     <React.Fragment>
-      <MessageHeader handleSearchChange={handleSearchChange} channelName={displayChannelName(channel)} users={users} />
+      <MessageHeader
+        handleSearchChange={handleSearchChange}
+        channelName={displayChannelName(channel)}
+        isStarred={checkToStarr(channel)}
+        users={users}
+        handleStarred={handleStarred}
+      />
 
       <Segment>
         <Comment.Group className={progressBar ? 'messages__progress' : 'messages'}>
