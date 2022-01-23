@@ -40,7 +40,7 @@ class Starred extends Component {
     changeChannel = channel => {
         this.setActiveChannel(channel);
         this.props.setCurrentChannel(channel);
-        this.props.setPrivateChannel(channel);
+        this.props.setPrivateChannel(false);
     }
 
     displayChannels = (starredChannels) => (

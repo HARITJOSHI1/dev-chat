@@ -88,6 +88,7 @@ const Messages = ({ currentChannel, currentUser, setTopPosters, isPrivate }) => 
         if (typingUsers.length) temp = [];
         for (const key in data) {
           if (key !== currentUser.createdUser.uid) {
+            data[channel.id] = channel.id;
             temp = temp.concat(data);
           }
         }
@@ -224,35 +225,6 @@ const Messages = ({ currentChannel, currentUser, setTopPosters, isPrivate }) => 
 
     return d ? true : false;
   }
-
-  const displayPrivateTypingUsers = () => {
-    if (privateTypingUsers.length == 1) {
-      const user = privateTypingUsers[0];
-      console.log(user);
-     if(user) {
-      return (
-        <div style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }}>
-          <span className="user__typing">{user.name} is typing</span>
-          <Typing />
-        </div>
-      );
-     }
-
-     else return null;
-    }
-    else return null;
-  }
-
-  const displayTypingUsers = () => {
-    if (isPrivate) {
-      return displayPrivateTypingUsers();
-    }
-    if (typingUsers.length > 0) {
-      return (<div style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }}>
-        <span className="user__typing">Someone is typing</span>
-        <Typing />
-      </div>
-      );
     }
 
     return null;
