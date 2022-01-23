@@ -54,16 +54,17 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
       const data = snap.val();
       let temp = [];
       if (data) {
-        if(typingUsers.length) temp = [];
+        if (typingUsers.length) temp = [];
         for (const key in data) {
           if (key !== currentUser.createdUser.uid) {
+            data[channel.id] = channel.id;
             temp = temp.concat(data);
           }
         }
         setTypingUsers((state) => state = temp);
       }
 
-      else{
+      else {
         setTypingUsers([]);
       }
     });
@@ -193,13 +194,24 @@ const Messages = ({ currentChannel, currentUser, setTopPosters }) => {
     return d ? true : false;
   }
 
+  const displayTypingContent = (numAreTypingUsers) => {
+    if(numAreTypingUsers > 1 ){
+      return `${numAreTypingUsers} others are typing`;
+    }
+    return `${numAreTypingUsers} user is typing`;
+  }
+
   const displayTypingUsers = () => {
-    if (typingUsers.length > 0) {
-      return (<div style={{ display: 'flex', alignItems: 'center', marginTop: "1rem"}}>
-        <span className="user__typing">Someone is typing</span>
-        <Typing />
-      </div>
-      );
+    if (typingUsers.length > 0) { 
+      for (let el of typingUsers) {
+        if (el[channel.id] === channel.id) {
+          const numAreTypingUsers = typingUsers.length;
+          return (<div style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }}>
+            <span className="user__typing">{displayTypingContent(numAreTypingUsers)}</span>
+            <Typing />
+          </div>);
+        }
+      }
     }
 
     return null;

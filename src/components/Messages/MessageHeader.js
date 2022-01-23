@@ -19,7 +19,7 @@ class MessagesHeader extends React.Component {
                 {/* Channel Title */}
                 <Header fluid="true" as="h2" floated="left" style={{ marginBottom: 0 }}>
                     <span>
-                        {isPrivate?  `@ ${channelName.slice(1)}` : channelName}
+                        {isPrivate ?  `@ ${channelName.slice(1)}` : channelName}
                         {!isPrivate && (<Icon
                             onClick={handleStarred}
                             name={isStarred ? "star" : "star outline"}
