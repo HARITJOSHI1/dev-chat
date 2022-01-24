@@ -295,7 +295,7 @@ const Messages = ({ currentChannel, currentUser, setTopPosters, isPrivate }) => 
 
 const mapStateToProps = state => {
   return {
-    isPrivate: state.channel.isPrivate
+    isPrivate: state.channel.isPrivate,
   }
 }
 
