@@ -27,6 +27,8 @@ class Login extends React.Component {
       if(i === 0){
         return <p key={i}>{error.message.includes("Firebase:")[1]? error.message.split("Firebase:")[1] : error.message}</p>
       }
+
+      return null;
     });
 
   handleChange = (event) => {

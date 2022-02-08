@@ -77,6 +77,7 @@ const topPosters = (state = {}, action) => {
       temp.sort((a, b) => {
         if (a[1][0] < b[1][0]) return 1;
         else if (a[1][0] > b[1][0]) return -1;
+        else return 0;
       });
 
       temp.forEach(ele => obj[ele[0]] = ele[1]);

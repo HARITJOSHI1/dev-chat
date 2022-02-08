@@ -17,6 +17,7 @@ const Messages = ({ currentChannel, currentUser, setTopPosters, isPrivate }) => 
   const [searchResults, setSearched] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
   const [privateTypingUsers, setPrivateTypingUsers] = useState([]);
+  const [isStarred, setStarred] = useState();
 
   const displayChannelName = channel => channel ? `#${channel.name}` : " ";
 
@@ -27,11 +28,11 @@ const Messages = ({ currentChannel, currentUser, setTopPosters, isPrivate }) => 
     });
   }
 
-  const addStarred = (isStarred) => {
+  const addStarred = (Starred = isStarred) => {
     const { createdUser: cu } = currentUser;
     const { ref, set, getDatabase, remove } = firebase.database;
     const db = getDatabase();
-    if (isStarred) {
+    if (Starred) {
       const info = {
         name: currentChannel.name,
         details: currentChannel.details,
