@@ -89,6 +89,7 @@ const Messages = ({ currentChannel, currentUser, setTopPosters, isPrivate }) => 
         for (const key in data) {
           if (key !== currentUser.createdUser.uid) {
             data[channel.id] = channel.id;
+            
             temp = temp.concat(data);
           }
         }
@@ -295,7 +296,7 @@ const Messages = ({ currentChannel, currentUser, setTopPosters, isPrivate }) => 
 
 const mapStateToProps = state => {
   return {
-    isPrivate: state.channel.isPrivate
+    isPrivate: state.channel.isPrivate,
   }
 }
 
