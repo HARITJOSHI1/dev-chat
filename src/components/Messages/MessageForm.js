@@ -6,7 +6,6 @@ import firebase from "../../firebase";
 import FileModal from "./FileModal";
 import ProgressBar from "./ProgressBar";
 import { setNotifications } from "../actions";
-import { onValue } from "firebase/database";
 
 class MessageForm extends React.Component {
     channel;
@@ -215,7 +214,6 @@ class MessageForm extends React.Component {
                     onChange={this.onMessageChange}
                     onKeyDown={this.onTyping}
                     style={{ marginBottom: "0.7em" }}
-                    label={<Button icon={"add"} />}
                     labelPosition="left"
                     placeholder="Write your message"
                     className={
@@ -269,4 +267,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, { setNotifications })(MessageForm);
+    export default connect(mapStateToProps, { setNotifications })(MessageForm);
