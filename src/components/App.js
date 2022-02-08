@@ -13,7 +13,7 @@ const App = ({ currentUser, currentChannel, channel, primaryColor, secondaryColo
       <ColorPanel currentUser={currentUser.createdUser}/>
       <SidePanel primaryColor = {primaryColor} currentUser={currentUser} />
 
-      <Grid.Column style={{ marginLeft: 320, width: '48%' }}>
+      <Grid.Column style={{ marginLeft: 320, width: '45%' }}>
         <Messages
           currentUser={currentUser}
           currentChannel={currentChannel}
