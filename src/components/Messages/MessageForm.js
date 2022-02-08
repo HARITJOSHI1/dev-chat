@@ -214,7 +214,6 @@ class MessageForm extends React.Component {
                     onChange={this.onMessageChange}
                     onKeyDown={this.onTyping}
                     style={{ marginBottom: "0.7em" }}
-                    label={<Button icon={"add"} />}
                     labelPosition="left"
                     placeholder="Write your message"
                     className={
