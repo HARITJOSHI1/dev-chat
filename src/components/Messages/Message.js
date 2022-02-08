@@ -20,11 +20,4 @@ const Message = ({ message, user}) => (
   </Comment>
 );
 
-
-const mapStateToProps = (state) => {
-  return {
-    currentUser: state.user.currentUser.createdUser
-  }
-}
-
 export default Message;

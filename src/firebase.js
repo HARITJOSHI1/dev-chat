@@ -6,7 +6,6 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
-  FacebookAuthProvider
 } from "firebase/auth";
 import { getDatabase, ref, set, push, update, child, onValue, off, onChildAdded, onChildRemoved, remove} from "firebase/database";
 import { getStorage, uploadBytesResumable, getDownloadURL, ref as sref } from "firebase/storage";

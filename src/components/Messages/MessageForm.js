@@ -23,7 +23,7 @@ class MessageForm extends React.Component {
     openModal = () => this.setState({ modal: true });
     closeModal = () => this.setState({ modal: false });
 
-    uploadFile = (file, metadata) => {
+    uploadFile = file => {
         const pathToUpload = this.channel.id;
         const { getStorage, sref, uploadBytesResumable, getDownloadURL } = firebase.storage;
         const storage = getStorage();
@@ -64,7 +64,7 @@ class MessageForm extends React.Component {
     }
 
     sendFileMessage(fileUrl, pathToUpload) {
-        const { push, ref, child, set, getDatabase, onValue } = firebase.database;
+        const { push, ref, child, set, getDatabase } = firebase.database;
         const db = getDatabase();
         const id = push(child(ref(db), pathToUpload)).key;
 

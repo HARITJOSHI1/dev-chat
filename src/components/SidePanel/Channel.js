@@ -19,7 +19,7 @@ class Channel extends Component {
     }
 
     componentDidMount() {
-        const { ref, getDatabase, onValue, onChildAdded } = firebase.database;
+        const { ref, getDatabase, onValue} = firebase.database;
         let loadedChannels;
         let channelkeys;
         const db = getDatabase();
@@ -93,7 +93,7 @@ class Channel extends Component {
 
     addChannel({ channelName, channelDetails, user }) {
         console.log(channelName, channelDetails);
-        const { push, ref, child, set, update, getDatabase } = firebase.database;
+        const { push, ref, child, update, getDatabase } = firebase.database;
         const db = getDatabase();
         const key = push(child(ref(db), 'channels')).key;
         const newChannel = {

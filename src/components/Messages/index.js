@@ -17,7 +17,6 @@ const Messages = ({ currentChannel, currentUser, setTopPosters, isPrivate }) => 
   const [searchResults, setSearched] = useState([]);
   const [typingUsers, setTypingUsers] = useState([]);
   const [privateTypingUsers, setPrivateTypingUsers] = useState([]);
-  const [isStarred, setStarred] = useState(false);
 
   const displayChannelName = channel => channel ? `#${channel.name}` : " ";
 
@@ -50,7 +49,7 @@ const Messages = ({ currentChannel, currentUser, setTopPosters, isPrivate }) => 
 
 
   const setPrivateTypingListeners = (channel) => {
-    const { ref, set, getDatabase, remove, onValue, onChildRemoved } = firebase.database;
+    const { ref, getDatabase, onValue, onChildRemoved } = firebase.database;
     const db = getDatabase();
     onValue(ref(db, `privateTyping/`), snap => {
       const data = snap.val();
@@ -79,7 +78,7 @@ const Messages = ({ currentChannel, currentUser, setTopPosters, isPrivate }) => 
   }
 
   const setTypingListeners = (channel) => {
-    const { ref, set, getDatabase, remove, onValue, onChildRemoved } = firebase.database;
+    const { ref, getDatabase, onValue, onChildRemoved } = firebase.database;
     const db = getDatabase();
     onValue(ref(db, `typing/${channel.id}`), snap => {
       const data = snap.val();
@@ -236,7 +235,7 @@ const Messages = ({ currentChannel, currentUser, setTopPosters, isPrivate }) => 
 
 
   const displayPrivateTypingUsers = () => {
-    if (privateTypingUsers.length == 1) {
+    if (privateTypingUsers.length === 1) {
       const user = privateTypingUsers[0];
       if (user) {
         return (
